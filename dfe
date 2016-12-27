@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using HtmlAgilityPack;
+
+
+namespace HTML_parser
+{
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            //string[] node_set;
+            
+            HtmlWeb web = new HtmlWeb();
+            //HtmlDocument document = web.Load(@"C:\Temp\sample.txt");
+            HtmlDocument document = web.Load("http://search.danawa.com/dsearch.php?query=gtx%201060&originalQuery=gtx%201060&cate_c1=861&cate_c2=876&tab=main&volumeType=allvs&page=1&limit=30&sort=priceASC&list=list&boost=true");
+
+            HtmlNode[] nodes = document.DocumentNode.SelectNodes("//strong").ToArray();
+
+            foreach (HtmlNode item in nodes)
+            {
+                Console.WriteLine(item.InnerHtml);
+                //Console.WriteLine(item);
+            }
+
+            string price = document.DocumentNode
+                            .SelectSingleNode("//p")
+                               .Attributes["class"].Value;
+
+            Console.WriteLine(price);
+
+            // Targets a specific node
+            HtmlNode someNode = document.GetElementbyId("mynode");
+
+            // If there is no node with that Id, someNode will be null
+            if (someNode != null)
+            {
+                // Extracts all links within that node
+                IEnumerable<HtmlNode> allLinks = someNode.Descendants("a");
+
+                // Outputs the href for external links
+                foreach (HtmlNode link in allLinks)
+                {
+                    // Checks whether the link contains an HREF attribute
+                    if (link.Attributes.Contains("href"))
+                    {
+                        // Simple check: if the href begins with "http://", prints it out
+                        if (link.Attributes["href"].Value.StartsWith("http://"))
+                            Console.WriteLine(link.Attributes["href"].Value);
+                            
+                    }
+                }
+            }
+            
+        }
+    }
+}
