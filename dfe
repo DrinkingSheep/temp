@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-
+using System.IO;
 
 namespace HTML_parser
 {
@@ -14,48 +14,109 @@ namespace HTML_parser
         static void Main(string[] args)
         {
             //string[] node_set;
-            
+            //StreamWriter sw = new StreamWriter(@"c:\Temp\output_tk_2.txt"); 
+            //전체 html을 텍스트 파일로 저장.
+
             HtmlWeb web = new HtmlWeb();
             //HtmlDocument document = web.Load(@"C:\Temp\sample.txt");
-            HtmlDocument document = web.Load("http://search.danawa.com/dsearch.php?query=gtx%201060&originalQuery=gtx%201060&cate_c1=861&cate_c2=876&tab=main&volumeType=allvs&page=1&limit=30&sort=priceASC&list=list&boost=true");
+            //HtmlDocument html = web.Load("http://search.danawa.com/dsearch.php?query=gtx%201060&originalQuery=gtx%201060&cate_c1=861&cate_c2=876&tab=main&volumeType=allvs&page=1&limit=30&sort=priceASC&list=list&boost=true");
+            //HtmlDocument document = web.Load("https://ticketcamp.net/aqours-tickets/?ref=search-history");
+            HtmlDocument html = web.Load("https://ticketcamp.net/aqours-tickets/?ref=search-history");
+            //HtmlNode [] price = document.DocumentNode.SelectNodes("//p").ToArray();
 
-            HtmlNode[] nodes = document.DocumentNode.SelectNodes("//strong").ToArray();
+            //HtmlNode div = document.DocumentNode.SelectSingleNode(@"//div[@id=""hplogo""]");
+            //Console.WriteLine(div.Attributes["style"].Value);
+            //HtmlNode head = document.DocumentNode.SelectSingleNode(@"//head//title");
+            //Console.WriteLine(head.InnerText);
+            //*[@class="ticket-price"]
+            HtmlNode[] price = html.DocumentNode.SelectNodes("//span[@class=\"ticket-price\"]").ToArray();
 
+            HtmlNode[] url = html.DocumentNode.SelectNodes("//li[@class=\"column price clickable\"]").ToArray();
+
+            string href = url[0].GetAttributeValue("href", "not found");
+
+            Console.WriteLine(href);
+
+            HtmlNode node = html.DocumentNode.SelectSingleNode("//li[@class=\"column price clickable\"]/a");
+
+            string dest = node.GetAttributeValue("href", "");
+
+            //Console.WriteLine(dest); //url 표시.
+
+
+            /*
+          
+
+            string url_value = dest;
+
+            HtmlDocument subhtml = web.Load(url_value);
+
+            HtmlNode[] order = subhtml.DocumentNode.SelectNodes("//strong").ToArray();
+            string[] num_of_order;
+            
+;            for(int i=0;i<sizeof(order);i++)
+            {
+                num_of_order[i] =
+            }
+
+           */
+
+
+           // 1次
+
+            /*
+            for (int i = 0; i < sizeof(nodes); i++)
+            {
+                if (nodes[0] == NULL)
+                {
+                    Console.WriteLine("NULL error");
+                }
+            }
+            */
+            // HtmlNode[] nodes = html.DocumentNode.SelectNodes("//span[@class=ticket-price]").ToArray();
+            //var nodes = html.DocumentNode.SelectNodes("//span[preceding-sibling::span[@class='ticket - price']]");
+            //Console.WriteLine(nodes);
+           
+            //int price_list[100];
+            /*foreach (HtmlNode item in nodes)
+              {
+                
+                Console.WriteLine(count);
+                Console.WriteLine(item.InnerHtml);
+
+                count++;
+                
+              }*/
+            Console.WriteLine("최저가");
+            Console.WriteLine(price[0].InnerHtml);
+            Console.WriteLine(url[0].InnerHtml);
+            //Console.WriteLine(href);
+            //string allnode = subhtml.DocumentNode.OuterHtml;
+
+            //sw.Write(allnode);
+            //전체 html을 텍스트 파일로 저장.
+
+            //Console.WriteLine(allnode);
+
+            /* foreach (HtmlNode item in nodes)
+             {
+                 Console.WriteLine(item.InnerHtml);
+             }*/
+
+            /*
             foreach (HtmlNode item in nodes)
             {
+                HtmlNode[] prices = item.Attributes
                 Console.WriteLine(item.InnerHtml);
                 //Console.WriteLine(item);
             }
+            */
 
-            string price = document.DocumentNode
-                            .SelectSingleNode("//p")
-                               .Attributes["class"].Value;
-
-            Console.WriteLine(price);
+            //Console.WriteLine(price);
 
             // Targets a specific node
-            HtmlNode someNode = document.GetElementbyId("mynode");
+            //HtmlNode someNode = document.GetElementbyId("mynode");
 
-            // If there is no node with that Id, someNode will be null
-            if (someNode != null)
-            {
-                // Extracts all links within that node
-                IEnumerable<HtmlNode> allLinks = someNode.Descendants("a");
-
-                // Outputs the href for external links
-                foreach (HtmlNode link in allLinks)
-                {
-                    // Checks whether the link contains an HREF attribute
-                    if (link.Attributes.Contains("href"))
-                    {
-                        // Simple check: if the href begins with "http://", prints it out
-                        if (link.Attributes["href"].Value.StartsWith("http://"))
-                            Console.WriteLine(link.Attributes["href"].Value);
-                            
-                    }
-                }
-            }
-            
         }
     }
 }
